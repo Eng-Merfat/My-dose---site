@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>التذكيرات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">جرعتي</div>
+    <div class="nav-links">
+      <a href="index.html">الرئيسية</a>
+      <a href="reminders.html">التذكيرات</a>
+      <a href="index.html#about">من نحن</a>
+    </div>
+  </nav>
+</header>
+
+<div class="reminders-container">
+
+  <h2>إضافة تذكير جديد</h2>
+
+  <div class="add-reminder">
+    <input type="text" id="title" placeholder="عنوان التذكير">
+    <input type="datetime-local" id="time">
+    <button onclick="addReminder()">إضافة</button>
+  </div>
+
+  <h2>قائمة التذكيرات</h2>
+  <ul id="reminderList"></ul>
+
+</div>
+
+<script>
+
+let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+
+function renderReminders() {
+  const list = document.getElementById("reminderList");
+  list.innerHTML = "";
+
+  reminders.forEach((reminder, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${reminder.title}</strong><br>
+      ${new Date(reminder.time).toLocaleString()} 
+      <br>
+      <button onclick="deleteReminder(${index})">حذف</button>
+      <hr>
+    `;
+    list.appendChild(li);
+  });
+
+  localStorage.setItem("reminders", JSON.stringify(reminders));
+}
+
+function addReminder() {
+  const title = document.getElementById("title").value;
+  const time = document.getElementById("time").value;
+
+  if (title === "" || time === "") {
+    alert("يرجى تعبئة جميع الحقول");
+    return;
+  }
+
+  reminders.push({ title, time });
+  renderReminders();
+
+  document.getElementById("title").value = "";
+  document.getElementById("time").value = "";
+}
+
+function deleteReminder(index) {
+  reminders.splice(index, 1);
+  renderReminders();
+}
+
+renderReminders();
+
+</script>
+
+</body>
+</html>
